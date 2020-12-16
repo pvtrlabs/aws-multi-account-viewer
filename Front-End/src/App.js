@@ -41,7 +41,7 @@ Amplify.configure({
     userPoolWebClientId: process.env.REACT_APP_USERPOOL_WEB_CLIENT_ID,
 
     oauth: {
-      "domain": "COGNITO_DOMAIN_NAME.auth.AWSRGN.amazoncognito.com",
+      "domain": "COGNITO_DOMAIN_NAME.auth.RGNAWS.amazoncognito.com",
       "scope": [
           "phone",
           "email",
