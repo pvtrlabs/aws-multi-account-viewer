@@ -30,23 +30,37 @@ import AllLightsail from './pages/AllLightsail';
 import Table from './pages/Table';
 import './index.css';
 
-
 Amplify.configure({
-  // OPTIONAL - if your API requires authentication 
+  // OPTIONAL - if your API requires authentication
   Auth: {
     // REQUIRED - Amazon Cognito Region
-    region: 'ap-southeast-2',
+    region: process.env.AWS_REGION_NAME,
     // OPTIONAL - Amazon Cognito User Pool ID
     userPoolId: process.env.REACT_APP_USERPOOL_ID,
     // OPTIONAL - Amazon Cognito Web Client ID (26-char alphanumeric string)
     userPoolWebClientId: process.env.REACT_APP_USERPOOL_WEB_CLIENT_ID,
+
+    oauth: {
+      "domain": "COGNITO_DOMAIN_NAME.auth.AWSRGN.amazoncognito.com",
+      "scope": [
+          "phone",
+          "email",
+          "openid",
+          "profile",
+          "aws.cognito.signin.user.admin"
+      ],
+      "redirectSignIn": "https://COGNITO_DOMAIN_NAME.AMPLIFYDNSDOMAIN",
+      "redirectSignOut": "https://COGNITO_DOMAIN_NAME.AMPLIFYDNSDOMAIN",
+      "responseType": "code",
+    }
+
   },
   API: {
     endpoints: [
       {
         name: "MyAPIGatewayAPI",
         endpoint: process.env.REACT_APP_APIG_ENDPOINT,
-        region: 'ap-southeast-2',
+        region: process.env.AWS_REGION_NAME,
         custom_header: async () => {
           return { Authorization: (await Auth.currentSession()).idToken.jwtToken };
         }
