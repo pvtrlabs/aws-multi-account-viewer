@@ -78,7 +78,21 @@ def send_sqs_message(accountNumber, function, region):
     return response
 
 
+def org_account_id():
+    """
+    Identify Org's Master Account
+
+    In case AccountViewer has been deployed into a different account than the master one then we need this function
+    to properly deal with listing account in our org.
+    """
+    if 'ENV_MASTER_ACCOUNT' in os.environ:
+        return os.environ['ENV_MASTER_ACCOUNT']
+    else:
+        return source_account
+
 # Lambda Handler
+
+
 def lambda_handler(event, context):
 
     try:
@@ -132,9 +146,7 @@ def lambda_handler(event, context):
 
             # if cron, send all messages to all accounts
             if passed_function == 'cron':
-
-                # Organizations only needs source_account
-                send_sqs_message(accountNumber=source_account,
+                send_sqs_message(accountNumber=org_account_id(),
                                  function='org', region='us-east-1')
 
                 for i in list_of_accounts:
@@ -180,7 +192,7 @@ def lambda_handler(event, context):
 
             # if function is organizations
             elif passed_function == 'org':
-                send_sqs_message(accountNumber=source_account,
+                send_sqs_message(accountNumber=org_account_id(),
                                  function='org', region='us-east-1')
 
             # if function is global and doesn't need each region
